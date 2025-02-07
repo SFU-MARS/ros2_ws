@@ -40,5 +40,5 @@
 			]
 		}
 	},
-   "postCreateCommand": "bash -i install.sh."
+   "postCreateCommand": "bash -i install.sh"
 }

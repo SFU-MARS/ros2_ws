@@ -16,12 +16,13 @@ fi
 # hunavsim 
 if [ ! -d lightsfm ] ; then
     git clone https://github.com/robotics-upo/lightsfm
-    cd lightsfm; make; sudo make install; cd ..
 fi
+cd lightsfm; make; sudo make install; cd ..
 
 # import hunavsim  repos
 mkdir -p src
 vcs import < hunavsim.repos src --skip-existing --recursive
+
 
 # resolve any dependancieskj0
 rosdep update

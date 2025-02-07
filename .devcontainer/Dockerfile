@@ -139,7 +139,12 @@ ENV DEBIAN_FRONTEND=
 # Install packages for hunavsim
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-   && apt-get -y install --no-install-recommends ros-humble-nav2-behavior-tree ros-humble-behaviortree-cpp-v3 ros-humble-gazebo-ros-pkgs\
+   && apt-get -y install --no-install-recommends \
+   ros-humble-nav2-* \
+   ros-humble-nav2-behavior-tree \
+   ros-humble-behaviortree-cpp-v3 \
+   ros-humble-gazebo-ros-pkgs \
+  ros-humble-tf-transformations \
    && apt-get autoremove -y \
    && apt-get clean -y \
    && rm -rf /var/lib/apt/lists/*
@@ -150,9 +155,9 @@ ENV DEBIAN_FRONTEND=dialog
 ARG WORKSPACE
 RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/ros/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/ros/.bashrc
-
+RUN echo "source /usr/share/gazebo/setup.sh" >> /home/ros/.bashrc
 # RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> /home/ros/.bashrc
-RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/src/hunav_gazebo_wrapper/media" >> /home/ros/.bashrc
+# RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/src/hunav_gazebo_wrapper/media" >> /home/ros/.bashrc
 # RUN echo "export TURTLEBOT3_MODEL=burger" >> /home/ros/.bashrc
 # RUN echo "export GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11:" >> /home/ros/.bashrc
 

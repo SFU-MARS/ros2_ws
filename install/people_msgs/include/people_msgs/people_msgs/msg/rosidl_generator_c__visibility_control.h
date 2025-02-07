@@ -1,0 +1,1 @@
+/workspaces/ros2_ws/build/people_msgs/rosidl_generator_c/people_msgs/msg/rosidl_generator_c__visibility_control.h
