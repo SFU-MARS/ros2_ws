@@ -21,7 +21,7 @@ cd lightsfm; make; sudo make install; cd ..
 
 # import hunavsim  repos
 mkdir -p src
-vcs import < hunavsim.repos src --skip-existing --recursive
+vcs import < ros2.repos src --skip-existing --recursive
 
 
 # resolve any dependancieskj0
