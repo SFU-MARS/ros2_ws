@@ -1,7 +1,7 @@
 {
     "editor.tabSize": 4,
     "editor.rulers": [
-       89 
+        89
     ],
     "files.associations": {
         "*.repos": "yaml",
