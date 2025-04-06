@@ -1,0 +1,21 @@
+repositories:
+  hunav_sim:
+    type: git
+    url: https://github.com/robotics-upo/hunav_sim
+    version: humble
+  people:
+    type: git
+    url: https://github.com/wg-perception/people
+    version: ros2
+  hunav_gazebo_wrapper:
+    type: git
+    url: https://github.com/robotics-upo/hunav_gazebo_wrapper.git
+    version: humble
+  hunavis:
+    type: git
+    url: https://github.com/SFU-MARS/hunavis.git
+    version: main
+  nonpersistent_voxel_layer:
+    type: git
+    url: https://github.com/SteveMacenski/nonpersistent_voxel_layer.git
+    version: humble

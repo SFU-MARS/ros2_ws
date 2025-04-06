@@ -1,0 +1,10 @@
+<CycloneDDS>
+  <Domain>
+    <General>
+      <Interfaces>
+        <!-- <NetworkInterface name="wlp63s0"/> -->
+        <NetworkInterface name="enp42s0"/>
+      </Interfaces>
+    </General>
+  </Domain>
+</CycloneDDS>
