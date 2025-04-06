@@ -5,9 +5,7 @@
 ###########################################
 # Base image
 ###########################################
-FROM nvidia/cuda:12.5.1-devel-ubuntu22.04 AS base
-
-ENV NVIDIA_DRIVER_CAPABILITIES=all
+FROM ubuntu:22.04 AS base
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -49,24 +47,6 @@ RUN sudo add-apt-repository universe \
     python3-argcomplete \
   && rm -rf /var/lib/apt/lists/*
 
-################
-# Expose the nvidia driver to allow opengl 
-# Dependencies for glvnd and X11.
-################
-RUN apt-get update \
- && apt-get install -y -qq --no-install-recommends \
-  libglvnd0 \
-  libgl1 \
-  libglx0 \
-  libegl1 \
-  libxext6 \
-  libx11-6 \
-  libtinfo5 
-
-# Env vars for the nvidia-container-runtime.
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV QT_X11_NO_MITSHM 1
-
 ENV ROS_DISTRO=humble
 ENV AMENT_PREFIX_PATH=/opt/ros/humble
 ENV COLCON_PREFIX_PATH=/opt/ros/humble
@@ -97,7 +77,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   vim \
   nano \
   tmux \
-  htop \
+  libtinfo5 \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
@@ -156,47 +136,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-turtlebot3-msgs \
     ros-humble-turtlebot3 \
     ros-humble-turtlebot3-gazebo \
-    ros-humble-plotjuggler-ros \
     ros-humble-rmw-cyclonedds-cpp \
-    ros-humble-joint-state-publisher \
+    ros-humble-plotjuggler-ros \
     ros-humble-rtabmap-ros \
-    ros-humble-xacro \
     && rm -rf /var/lib/apt/lists/*
-ENV DEBIAN_FRONTEND=
-
-
-# ###########################################
-# #  Zed2
-# ###########################################
-FROM bn AS zed
-ARG UBUNTU_MAJOR=22
-ARG UBUNTU_MINOR=04
-ARG CUDA_MAJOR=12
-ARG CUDA_MINOR=1
-ARG CUDA_PATCH=0
-ARG ZED_SDK_MAJOR=4
-ARG ZED_SDK_MINOR=1
-ARG ZED_SDK_PATCH=4
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install --no-install-recommends -y lsb-release wget sudo build-essential cmake python3 python3-pip libpng-dev libgomp1 less udev zstd
-ENV DEBIAN_FRONTEND=
-
-# ML: Installing /home/ros/ZED_SDK_Linux_Ubuntu.run will pip install packages. By default, docker runs 
-#     as root. Pip installing packages with root will mess up file permissions, 
-#     causing pip to not work unless used as root
-USER ros
-# ML: For some reason $USER is empty, this causes the folowing script to not work
-ENV USER=ros
-RUN wget -q -O /home/ros/ZED_SDK_Linux_Ubuntu.run https://download.stereolabs.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/cu${CUDA_MAJOR}${CUDA_MINOR%.*}/ubuntu${UBUNTU_MAJOR}
-RUN chmod +x /home/ros/ZED_SDK_Linux_Ubuntu.run 
-RUN ./home/ros/ZED_SDK_Linux_Ubuntu.run -- silent skip_cuda 
-
-USER root
-ENV USER=root
-RUN ln -sf /lib/x86_64-linux-gnu/libusb-1.0.so.0 /usr/lib/x86_64-linux-gnu/libusb-1.0.so 
-RUN rm /home/ros/ZED_SDK_Linux_Ubuntu.run 
-RUN rm -rf /var/lib/apt/lists/*
 
 # Source
 ARG WORKSPACE
