@@ -7,9 +7,6 @@
       },
       "includePath": [
         "/opt/ros/humble/include/**",
-        "/workspaces/ros2_ws/src/hunav_gazebo_wrapper/include/**",
-        "/workspaces/ros2_ws/src/hunav_sim/hunav_agent_manager/include/**",
-        "/workspaces/ros2_ws/src/hunav_sim/hunav_rviz2_panel/include/**",
         "/usr/include/**"
       ],
       "name": "ROS",

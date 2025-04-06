@@ -16,8 +16,8 @@
 		"--volume=/tmp/.X11-unix:/tmp/.X11-unix",
 		"--volume=/mnt/wslg:/mnt/wslg",
 		"--ipc=host",
-		"--privileged"
-		// "--gpus=all",
+		"--privileged",
+		"--gpus=all",
 	],
 	"privileged": true, // Needed to access camera
 	"containerEnv": {
@@ -31,12 +31,21 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"althack.ament-task-provider",
+				"betwo.b2-catkin-tools",
+				"DotJoshJohnson.xml",
 				"ms-azuretools.vscode-docker",
 				"ms-iot.vscode-ros",
 				"ms-python.python",
 				"ms-vscode.cpptools",
 				"ms-python.black-formatter",
-				"charliermarsh.ruff"
+				"charliermarsh.ruff",
+				"redhat.vscode-yaml",
+				"smilerobotics.urdf",
+				"streetsidesoftware.code-spell-checker",
+				"twxs.cmake",
+				"yzhang.markdown-all-in-one",
+				"zachflower.uncrustify"
 			]
 		}
 	},

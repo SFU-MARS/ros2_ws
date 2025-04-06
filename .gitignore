@@ -51,7 +51,22 @@ qtcreator-*
 CATKIN_IGNORE
 
 
-lightsfm/
-log/
-src/
+# Build folders
 install/
+log/
+site/
+
+# Source folders
+src/
+py/
+
+# Misc files
+*txt
+*png
+*rosbag*
+*.npy
+*.pkl
+*.npz
+frames*
+*log
+*mp4

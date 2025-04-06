@@ -33,5 +33,3 @@ rosdep install -i --from-path src --rosdistro humble -y
 
 # build workspace
 colcon build --symlink-install
-
-echo "Setup complete! Next, run source ~/.bashrc and get started from the README."

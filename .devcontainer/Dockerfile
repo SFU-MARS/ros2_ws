@@ -98,6 +98,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   nano \
   tmux \
   htop \
+  libtinfo5 \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
@@ -176,7 +177,7 @@ ARG CUDA_MINOR=1
 ARG CUDA_PATCH=0
 ARG ZED_SDK_MAJOR=4
 ARG ZED_SDK_MINOR=1
-ARG ZED_SDK_PATCH=4
+ARG ZED_SDK_PATCH=2
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install --no-install-recommends -y lsb-release wget sudo build-essential cmake python3 python3-pip libpng-dev libgomp1 less udev zstd
