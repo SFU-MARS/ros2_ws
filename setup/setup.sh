@@ -13,15 +13,18 @@ if [ ! -d ~/.fzf/ ]; then
     ~/.fzf/install --key-bindings --completion --update-rc
 fi
 #################
-# hunavsim 
+# hunavsim
+mkdir -p py
+cd py 
 if [ ! -d lightsfm ] ; then
     git clone https://github.com/robotics-upo/lightsfm
 fi
-cd lightsfm; make; sudo make install; cd ..
+cd lightsfm; make; sudo make install; cd ..;
+cd ..
 
 # import hunavsim  repos
 mkdir -p src
-vcs import < ros2.repos src --skip-existing --recursive
+vcs import < setup/ros2.repos src --skip-existing --recursive
 
 
 # resolve any dependancieskj0
@@ -30,3 +33,5 @@ rosdep install -i --from-path src --rosdistro humble -y
 
 # build workspace
 colcon build --symlink-install
+
+echo "Setup complete! Next, run source ~/.bashrc and get started from the README."

@@ -1,12 +1,13 @@
 ##############################################
 # Created from template ros2.dockerfile.jinja
-# Based from https://github.com/athackst/dockerfiles/blob/main/ros2/humble.Dockerfile
 ##############################################
 
 ###########################################
 # Base image
 ###########################################
-FROM ubuntu:22.04 AS base
+FROM nvidia/cuda:12.5.1-devel-ubuntu22.04 AS base
+
+ENV NVIDIA_DRIVER_CAPABILITIES=all
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -16,7 +17,7 @@ RUN apt-get update && apt-get install -y \
   && locale-gen en_US.UTF-8 \
   && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
   && rm -rf /var/lib/apt/lists/*
-ENV LANG=en_US.UTF-8
+ENV LANG en_US.UTF-8
 
 # Install timezone
 RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
@@ -48,16 +49,34 @@ RUN sudo add-apt-repository universe \
     python3-argcomplete \
   && rm -rf /var/lib/apt/lists/*
 
+################
+# Expose the nvidia driver to allow opengl 
+# Dependencies for glvnd and X11.
+################
+RUN apt-get update \
+ && apt-get install -y -qq --no-install-recommends \
+  libglvnd0 \
+  libgl1 \
+  libglx0 \
+  libegl1 \
+  libxext6 \
+  libx11-6 \
+  libtinfo5 
+
+# Env vars for the nvidia-container-runtime.
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV QT_X11_NO_MITSHM 1
+
 ENV ROS_DISTRO=humble
 ENV AMENT_PREFIX_PATH=/opt/ros/humble
 ENV COLCON_PREFIX_PATH=/opt/ros/humble
-ENV LD_LIBRARY_PATH=/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib
+ENV LD_LIBRARY_PATH=/opt/ros/humble/lib
 ENV PATH=/opt/ros/humble/bin:$PATH
 ENV PYTHONPATH=/opt/ros/humble/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages
 ENV ROS_PYTHON_VERSION=3
 ENV ROS_VERSION=2
-ENV ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
 ENV DEBIAN_FRONTEND=
+
 ###########################################
 #  Develop image
 ###########################################
@@ -76,6 +95,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   ros-dev-tools \
   ros-humble-ament-* \
   vim \
+  nano \
+  tmux \
+  htop \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
@@ -122,47 +144,71 @@ ENV DEBIAN_FRONTEND=
 ENV LD_LIBRARY_PATH=/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib
 
 ###########################################
-#  Full+Gazebo image
+#  Basic navigation image
 ###########################################
-FROM full AS gazebo
+FROM full AS bn
 
 ENV DEBIAN_FRONTEND=noninteractive
-# Install gazebo
-RUN wget https://packages.osrfoundation.org/gazebo.gpg -O /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] http://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/gazebo-stable.list > /dev/null \
-  && apt-get update && apt-get install -q -y --no-install-recommends \
-    ros-humble-ros-gz \
-  && rm -rf /var/lib/apt/lists/*
+# Install addition ros packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup \ 
+    ros-humble-turtlebot3-msgs \
+    ros-humble-turtlebot3 \
+    ros-humble-turtlebot3-gazebo \
+    ros-humble-plotjuggler-ros \
+    ros-humble-rmw-cyclonedds-cpp \
+    ros-humble-joint-state-publisher \
+    ros-humble-rtabmap-ros \
+    ros-humble-xacro \
+    && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
 
-# Install packages for hunavsim
+# ###########################################
+# #  Zed2
+# ###########################################
+FROM bn AS zed
+ARG UBUNTU_MAJOR=22
+ARG UBUNTU_MINOR=04
+ARG CUDA_MAJOR=12
+ARG CUDA_MINOR=1
+ARG CUDA_PATCH=0
+ARG ZED_SDK_MAJOR=4
+ARG ZED_SDK_MINOR=1
+ARG ZED_SDK_PATCH=4
+
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update \
-   && apt-get -y install --no-install-recommends \
-   ros-humble-nav2-* \
-   ros-humble-nav2-behavior-tree \
-   ros-humble-behaviortree-cpp-v3 \
-   ros-humble-gazebo-ros-pkgs \
-  ros-humble-tf-transformations \
-   && apt-get autoremove -y \
-   && apt-get clean -y \
-   && rm -rf /var/lib/apt/lists/*
-ENV DEBIAN_FRONTEND=dialog
+RUN apt-get update && apt-get install --no-install-recommends -y lsb-release wget sudo build-essential cmake python3 python3-pip libpng-dev libgomp1 less udev zstd
+ENV DEBIAN_FRONTEND=
 
+# ML: Installing /home/ros/ZED_SDK_Linux_Ubuntu.run will pip install packages. By default, docker runs 
+#     as root. Pip installing packages with root will mess up file permissions, 
+#     causing pip to not work unless used as root
+USER ros
+# ML: For some reason $USER is empty, this causes the folowing script to not work
+ENV USER=ros
+RUN wget -q -O /home/ros/ZED_SDK_Linux_Ubuntu.run https://download.stereolabs.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/cu${CUDA_MAJOR}${CUDA_MINOR%.*}/ubuntu${UBUNTU_MAJOR}
+RUN chmod +x /home/ros/ZED_SDK_Linux_Ubuntu.run 
+RUN ./home/ros/ZED_SDK_Linux_Ubuntu.run -- silent skip_cuda 
 
-# # Source
+USER root
+ENV USER=root
+RUN ln -sf /lib/x86_64-linux-gnu/libusb-1.0.so.0 /usr/lib/x86_64-linux-gnu/libusb-1.0.so 
+RUN rm /home/ros/ZED_SDK_Linux_Ubuntu.run 
+RUN rm -rf /var/lib/apt/lists/*
+
+# Source
 ARG WORKSPACE
 RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/ros/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/ros/.bashrc
-RUN echo "source /usr/share/gazebo/setup.sh" >> /home/ros/.bashrc
-# RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> /home/ros/.bashrc
-# RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/src/hunav_gazebo_wrapper/media" >> /home/ros/.bashrc
-# RUN echo "export TURTLEBOT3_MODEL=burger" >> /home/ros/.bashrc
-# RUN echo "export GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11:" >> /home/ros/.bashrc
 
-# RUN echo "export ROS_DOMAIN_ID=1" >> /home/ros/.bashrc
+RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> /home/ros/.bashrc
+RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/install/hunavis/share/hunavis/models" >> /home/ros/.bashrc
+RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/src/hunav_gazebo_wrapper/media" >> /home/ros/.bashrc
+RUN echo "export TURTLEBOT3_MODEL=waffle" >> /home/ros/.bashrc
+RUN echo "export GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11:" >> /home/ros/.bashrc
 
-# RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/ros/.bashrc
-# RUN echo "export ROS_DOMAIN_ID=5" >> /home/ros/.bashrc
-# RUN echo "export CYCLONEDDS_URI=${WORKSPACE}/cyclonedds.xml" >> /home/ros/.bashrc
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/ros/.bashrc
+RUN echo "export ROS_DOMAIN_ID=5" >> /home/ros/.bashrc
+RUN echo "export CYCLONEDDS_URI=${WORKSPACE}/setup/cyclonedds_lo.xml" >> /home/ros/.bashrc
