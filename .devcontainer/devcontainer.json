@@ -17,7 +17,7 @@
 		"--volume=/mnt/wslg:/mnt/wslg",
 		"--ipc=host",
 		"--privileged",
-		"--gpus=all",
+		"--gpus=all"
 	],
 	"privileged": true, // Needed to access camera
 	"containerEnv": {
