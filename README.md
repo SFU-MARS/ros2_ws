@@ -17,6 +17,8 @@ ros2 launch hunavis mars.launch.py
 ```
     - Settings are in `hunavis/params/hunavsim.yaml`
 
+![Human and robot in an empty room](images/human_robot_gazebo.png)
+
 2. Launch nav2: 
 
 ```bash
@@ -30,6 +32,8 @@ ros2 launch hunavis tb3_custom_sim_launch.py
 ```bash
 ros2 launch hunavis hudet.launch.py
 ```
+
+![Rviz display](images/human_robot_rviz.png)
 
 #### Known issues
 - If the simulator doesn't run properly, killing all processes that still are running after `^C` may help. 
