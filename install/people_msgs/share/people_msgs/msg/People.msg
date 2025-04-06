@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/src/people/people_msgs/msg/People.msg

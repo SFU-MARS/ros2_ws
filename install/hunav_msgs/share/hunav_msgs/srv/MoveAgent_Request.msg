@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/build/hunav_msgs/rosidl_cmake/srv/MoveAgent_Request.msg

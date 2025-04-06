@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/src/hunav_sim/hunav_rviz2_panel/launch/hunav_rviz2_launch.py

@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/src/hunav_sim/hunav_rviz2_panel/include/headers/goal_common.hpp

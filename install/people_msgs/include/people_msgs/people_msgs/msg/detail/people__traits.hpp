@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/build/people_msgs/rosidl_generator_cpp/people_msgs/msg/detail/people__traits.hpp

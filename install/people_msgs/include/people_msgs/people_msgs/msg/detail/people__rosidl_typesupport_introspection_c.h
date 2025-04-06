@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/build/people_msgs/rosidl_typesupport_introspection_c/people_msgs/msg/detail/people__rosidl_typesupport_introspection_c.h

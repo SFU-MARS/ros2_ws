@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/build/people_msgs/ament_cmake_core/people_msgsConfig-version.cmake

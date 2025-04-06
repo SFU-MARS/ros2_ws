@@ -1,1 +1,0 @@
-/workspaces/ros2_ws/src/hunav_gazebo_wrapper/launch/example_cafe.launch.py
