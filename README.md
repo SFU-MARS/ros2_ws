@@ -11,28 +11,22 @@ See [general instructions for using workspaces with docker](https://github.com/S
 
 ## Running the simulation
 1. Launch human simulator: 
-
+    - Settings are in `hunavis/params/hunavsim.yaml`
 ```bash
 ros2 launch hunavis mars.launch.py
 ```
-    - Settings are in `hunavis/params/hunavsim.yaml`
-
 ![Human and robot in an empty room](images/human_robot_gazebo.png)
 
 2. Launch nav2: 
-
+    - Settings are in `hunavis/params/tb3_custom_sim.yaml`
 ```bash
 ros2 launch hunavis tb3_custom_sim_launch.py
 ```
 
-    - Settings are in `hunavis/params/tb3_custom_sim.yaml`
-
 3. Launch human detection (including loading rviz)
-
 ```bash
 ros2 launch hunavis hudet.launch.py
 ```
-
 ![Rviz display](images/human_robot_rviz.png)
 
 #### Known issues
