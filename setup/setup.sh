@@ -33,6 +33,7 @@ cd ..
 vcs import < setup/ros2.repos src --skip-existing --recursive
 
 # Resolve dependencies
+sudo apt-get update
 rosdep update
 rosdep install -i --from-path src --rosdistro humble -y
 
