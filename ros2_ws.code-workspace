@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "src"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.repos": "yaml",
+			"*.world": "xml",
+			"*.xacro": "xml"
+		},
+		"python.autoComplete.extraPaths": [
+			"/workspaces/ros2_ws/build/hunavis",
+			"/workspaces/ros2_ws/install/hunavis/lib/python3.10/site-packages",
+			"/workspaces/ros2_ws/install/people_msgs/local/lib/python3.10/dist-packages",
+			"/workspaces/ros2_ws/build/hunav_evaluator",
+			"/workspaces/ros2_ws/install/hunav_evaluator/lib/python3.10/site-packages",
+			"/workspaces/ros2_ws/install/hunav_msgs/local/lib/python3.10/dist-packages",
+			"/opt/ros/humble/local/lib/python3.10/dist-packages",
+			"/opt/ros/humble/lib/python3.10/site-packages"
+		],
+		"python.analysis.extraPaths": [
+			"/workspaces/ros2_ws/build/hunavis",
+			"/workspaces/ros2_ws/install/hunavis/lib/python3.10/site-packages",
+			"/workspaces/ros2_ws/install/people_msgs/local/lib/python3.10/dist-packages",
+			"/workspaces/ros2_ws/build/hunav_evaluator",
+			"/workspaces/ros2_ws/install/hunav_evaluator/lib/python3.10/site-packages",
+			"/workspaces/ros2_ws/install/hunav_msgs/local/lib/python3.10/dist-packages",
+			"/opt/ros/humble/local/lib/python3.10/dist-packages",
+			"/opt/ros/humble/lib/python3.10/site-packages"
+		]
+	}
+}
