@@ -61,4 +61,4 @@ ros2 launch hunavis hudet.launch.py
 #### Known issues
 - If the simulator doesn't run properly, killing all processes that still are running after `^C` may help. 
 - `gzserver` may be running in the background after `^C`, but can be killed using `pkill -9 gzserver`.
-  - Similarly, killing `gzclient`, `ros`, `python3` or any other related processes may help
+    - Similarly, killing `gzclient`, `ros`, `python3` or any other related processes may help
