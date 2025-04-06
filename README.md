@@ -1,13 +1,14 @@
 # ROS2 Workspace
 Workspace for projects from [MARS Lab](https://sfumars.com/)
-- Originally fork of https://github.com/athackst/vscode_ros2_workspace/tree/humble-nvidia
+- Originally fork of https://github.com/athackst/dockerfiles/blob/main/ros2/humble.Dockerfile
 
 ## Information
 - OS: Ubuntu 22.04 LTS 
 - ROS2: Humble
 
 ## Setup
-See [general instructions for using workspaces with docker](https://github.com/SFU-MARS/ros2_tutorial/wiki/Building-and-using-the-dev-container).
+- See [general instructions for using workspaces with docker](https://github.com/SFU-MARS/ros2_tutorial/wiki/Building-and-using-the-dev-container).
+- Switch to `main` branch if CUDA is required
 
 ## Running the simulation
 1. Launch human simulator: 
