@@ -28,7 +28,7 @@ ros2 launch hunavis tb3_custom_sim_launch.py
 3. Launch human detection (including loading rviz)
 
 ```bash
-ros2 launch human_detection hudet.launch.py
+ros2 launch hunavis hudet.launch.py
 ```
 
 #### Known issues
