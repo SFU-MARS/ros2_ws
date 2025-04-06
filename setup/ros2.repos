@@ -14,7 +14,7 @@ repositories:
   hunavis:
     type: git
     url: https://github.com/SFU-MARS/hunavis.git
-    version: first_working_version
+    version: main
   nonpersistent_voxel_layer:
     type: git
     url: https://github.com/SteveMacenski/nonpersistent_voxel_layer.git
