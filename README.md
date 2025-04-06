@@ -38,21 +38,28 @@ ros2 launch hunavis hudet.launch.py
 ![Rviz display](images/human_robot_rviz.png)
 
 #### Known issues
-- If the simulator doesn't run properly, killing all processes that still are running after `^C` may help. 
-  - Execute the following line to kill the likely remaining processes:
-
+- **If the simulator doesn't run properly**, killing all processes that still are running after `^C` may help. 
+    - Execute the following line to kill the likely remaining processes:
+    - Run `ps -a` to verify no processes remain. If any remain, kill them one by one until `ps -a` shows they are gone.
+    - Double check that these processes are not running both within the docker container and on the host.
 ```bash
 pkill -9 gazebo && pkill -9 gzclient && pkill -9 gzserver && pkill -9 ros2 && pkill -9 python3
 ```
-  - Run `ps -a` to verify no processes remain. If any remain, kill them one by one until `ps -a` shows they are gone.
-  - Double check that these processes are not running both within the docker container and on the host.
-- If you get an error like `error creating runtime directory '/run/user/1001' (permission denied)`:
+    
+- **If you get an permission denied error** like `error creating runtime directory '/run/user/1001' (permission denied)`:
   - Run the following:
-
+  - Lines 2 and 3 ensure ros has ownership of the runtime directory. The last line sets up the Gazebo environment.
 ```bash
 source ~/.bashrc
 sudo chmod -R 700 /run/user
 sudo chown -R ros:ros /run/user
 source /usr/share/gazebo/setup.sh
 ```
-  - Lines 2 and 3 ensure ros has ownership of the runtime directory. The last line sets up the Gazebo environment.
+- **If the initial `colcon build` fails**, it is likely due to dependency issues.
+    - Try running
+```bash
+sudo apt-get update
+rosdep update
+rosdep install -i --from-path src --rosdistro humble -y
+colcon build --symlink-install
+```
