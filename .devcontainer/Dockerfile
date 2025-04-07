@@ -213,3 +213,4 @@ RUN echo "export GAZEBO_RESOURCE_PATH=/usr/share/gazebo-11:" >> /home/ros/.bashr
 RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/ros/.bashrc
 RUN echo "export ROS_DOMAIN_ID=5" >> /home/ros/.bashrc
 RUN echo "export CYCLONEDDS_URI=${WORKSPACE}/setup/cyclonedds_lo.xml" >> /home/ros/.bashrc
+RUN echo "export XLA_PYTHON_CLIENT_MEM_FRACTION=0.1" >> /home/ros/.bashrc
