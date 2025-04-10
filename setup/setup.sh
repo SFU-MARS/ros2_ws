@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+mkdir -p py
+mkdir -p src
 
 # ======================
 # Clone non-ROS packages
@@ -18,7 +20,6 @@ if [ ! -d ~/.fzf/ ]; then
 fi
 
 # For hunavsim
-mkdir -p py
 cd py 
 if [ ! -d lightsfm ] ; then
     git clone https://github.com/robotics-upo/lightsfm
