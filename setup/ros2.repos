@@ -2,7 +2,7 @@ repositories:
   hunav_sim:
     type: git
     url: https://github.com/robotics-upo/hunav_sim
-    version: humble
+    version: 965619eb3c3bd497730288eca1ce3aa49e590cac
   people:
     type: git
     url: https://github.com/wg-perception/people
