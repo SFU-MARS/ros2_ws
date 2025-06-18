@@ -1,4 +1,21 @@
 #!/bin/bash
+# Args
+#     --no_import: Do not import from .repos 
+import=true
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+    --no_import)
+        import=false
+        shift
+        ;;
+    *)
+        echo "Unknown option: $arg"
+        exit 1
+        ;;
+    esac
+done
+
 set -e
 mkdir -p py
 mkdir -p src
@@ -31,12 +48,14 @@ cd ..
 # ROS packages
 # ============
 # Import repos
-vcs import < setup/ros2.repos src --skip-existing --recursive
+if $import; then
+    vcs import < setup/ros2.repos src --skip-existing --recursive
+fi
 
 # Resolve dependencies
 sudo apt-get update
 rosdep update
-rosdep install -i --from-path src --rosdistro humble -y
+rosdep install -i --from-path src --rosdistro humble -y --skip-keys="scout_description"
 
 # Build workspace
 colcon build --symlink-install
