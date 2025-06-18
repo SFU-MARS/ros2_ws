@@ -23,3 +23,7 @@ repositories:
     type: git
     url: https://github.com/stereolabs/zed-ros2-examples.git
     version: humble-v4.1.4
+  people:
+    type: git
+    url: https://github.com/wg-perception/people
+    version: ros2
