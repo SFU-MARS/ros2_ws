@@ -2,6 +2,7 @@
 # Args
 #     --no_import: Do not import from .repos 
 import=true
+container=true
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -9,6 +10,11 @@ while [[ $# -gt 0 ]]; do
         import=false
         shift
         ;;
+    case "$1" in
+    --host)
+        container=false
+        shift
+        ;;        
     *)
         echo "Unknown option: $arg"
         exit 1
@@ -24,31 +30,34 @@ mkdir -p src
 # Clone non-ROS packages
 # ======================
 # tmux config
-if [ ! -f ~/.tmux.conf ]; then
-    touch ~/.tmux.conf
-    echo "set -g history-limit 10000" >> ~/.tmux.conf
-    echo "set -g mouse on" >> ~/.tmux.conf
+if [[ $container == true ]]; then
+    if [ ! -f ~/.tmux.conf ]; then
+        touch ~/.tmux.conf
+        echo "set -g history-limit 10000" >> ~/.tmux.conf
+        echo "set -g mouse on" >> ~/.tmux.conf
+    fi
+    
+    # fzf
+    if [ ! -d ~/.fzf/ ]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+        ~/.fzf/install --key-bindings --completion --update-rc
+    fi
+    
+    
+    # For hunavsim
+    cd py 
+    if [ ! -d lightsfm ] ; then
+        git clone https://github.com/robotics-upo/lightsfm
+    fi
+    cd lightsfm; make; sudo make install; cd ..;
+    cd ..
 fi
-
-# fzf
-if [ ! -d ~/.fzf/ ]; then
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install --key-bindings --completion --update-rc
-fi
-
-# For hunavsim
-cd py 
-if [ ! -d lightsfm ] ; then
-    git clone https://github.com/robotics-upo/lightsfm
-fi
-cd lightsfm; make; sudo make install; cd ..;
-cd ..
 
 # ============
 # ROS packages
 # ============
 # Import repos
-if $import; then
+if [[ $import == true ]]; then
     vcs import < setup/ros2.repos src --skip-existing --recursive
 fi
 
