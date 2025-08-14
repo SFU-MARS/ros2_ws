@@ -6,7 +6,7 @@ repositories:
   hunav_gazebo_wrapper:
     type: git
     url: https://github.com/robotics-upo/hunav_gazebo_wrapper.git
-    version: humble
+    version: v1.0-humble
   hunavis:
     type: git
     url: https://github.com/SFU-MARS/hunavis.git
