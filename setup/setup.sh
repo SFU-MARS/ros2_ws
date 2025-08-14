@@ -10,7 +10,6 @@ while [[ $# -gt 0 ]]; do
         import=false
         shift
         ;;
-    case "$1" in
     --host)
         container=false
         shift
