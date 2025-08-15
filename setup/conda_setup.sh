@@ -10,4 +10,6 @@ fi
 
 source ~/miniconda3/bin/activate
 conda config --set auto_activate_base false
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 source ~/.bashrc
