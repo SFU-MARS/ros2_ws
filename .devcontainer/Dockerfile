@@ -200,6 +200,7 @@ RUN ln -sf /lib/x86_64-linux-gnu/libusb-1.0.so.0 /usr/lib/x86_64-linux-gnu/libus
 RUN rm /home/ros/ZED_SDK_Linux_Ubuntu.run 
 RUN rm -rf /var/lib/apt/lists/*
 
+
 # Source
 ARG WORKSPACE
 RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/ros/.bashrc
@@ -215,3 +216,7 @@ RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/ros/.bashrc
 RUN echo "export ROS_DOMAIN_ID=5" >> /home/ros/.bashrc
 RUN echo "export CYCLONEDDS_URI=${WORKSPACE}/setup/cyclonedds_lo.xml" >> /home/ros/.bashrc
 RUN echo "export XLA_PYTHON_CLIENT_MEM_FRACTION=0.1" >> /home/ros/.bashrc
+
+RUN chmod -R 700 /run/user
+RUN chown -R ros:ros /run/user
+RUN echo "source /usr/share/gazebo/setup.sh" >> /home/ros/.bashrc
