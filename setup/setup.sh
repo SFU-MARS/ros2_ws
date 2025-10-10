@@ -3,6 +3,7 @@
 #     --no_import: Do not import from .repos 
 import=true
 container=true
+build=true
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -13,7 +14,11 @@ while [[ $# -gt 0 ]]; do
     --host)
         container=false
         shift
-        ;;        
+        ;;      
+    --no_build)
+        build=false
+        shift
+        ;;            
     *)
         echo "Unknown option: $arg"
         exit 1
@@ -60,12 +65,14 @@ if [[ $import == true ]]; then
     vcs import < setup/ros2.repos src --skip-existing --recursive
 fi
 
-# Resolve dependencies
-sudo apt-get update
-rosdep update
-rosdep install -i --from-path src --rosdistro humble -y --skip-keys="scout_description"
-
-# Build workspace
-colcon build --symlink-install
+if [[ $build == true ]]; then
+    # Resolve dependencies
+    sudo apt-get update
+    rosdep update
+    rosdep install -i --from-path src --rosdistro humble -y --skip-keys="scout_description"
+    
+    # Build workspace
+    colcon build --symlink-install
+fi
 
 echo "Setup complete. Next, run source ~/.bashrc and follow README."
