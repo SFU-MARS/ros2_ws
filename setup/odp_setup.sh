@@ -2,6 +2,10 @@
 # OptimizedDP setup — assumes Mambaforge (mamba) is installed and on PATH
 set -euo pipefail
 
+MAMBA_INSTALL_DIR="$HOME/mambaforge"
+source "$MAMBA_INSTALL_DIR/bin/activate"
+
+
 # Initialize Conda in this shell so "conda activate" works
 eval "$(conda shell.bash hook)"
 
@@ -28,7 +32,7 @@ pip install -e .
 # Create the 'odp' environment if environment.yml exists
 if [ -f environment.yml ]; then
     echo "🔹 Creating odp environment..."
-    mamba env create -f environment.yml || echo "Environment may already exist — skipping creation."
+    mamba env create -f environment.yml -y || echo "Environment may already exist — skipping creation."
 else
     echo "⚠️ environment.yml not found — skipping environment creation."
 fi
