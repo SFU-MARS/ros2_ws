@@ -1,6 +1,8 @@
 #!/bin/bash
-# Args
+# Flags
 #     --no_import: Do not import from .repos 
+#     --host: Install on host (skip fzf and lightsfm)
+#     --no_build: Do not build ROS packages
 import=true
 container=true
 build=true
