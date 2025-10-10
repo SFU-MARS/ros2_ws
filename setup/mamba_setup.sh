@@ -31,8 +31,7 @@ conda deactivate
 mamba clean -afy
 
 # Add to .bashrc for future sessions
-if ! grep -q "source $INSTALL_DIR/bin/activate" ~/.bashrc; then
-    echo "source $INSTALL_DIR/bin/activate" >> ~/.bashrc
-fi
+echo "source $INSTALL_DIR/bin/activate" >> ~/.bashrc
+echo "conda deactivate" >> ~/.bashrc
 
 echo "Mambaforge installation complete!"
