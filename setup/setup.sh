@@ -74,7 +74,7 @@ if [[ $build == true ]]; then
     rosdep install -i --from-path src --rosdistro humble -y --skip-keys="scout_description"
     
     # Build workspace
-    colcon build --symlink-install
+    colcon build --symlink-install --packages-skip zed_isaac_ros_nitros_sub zed_isaac_ros_april_tag
 fi
 
 echo "Setup complete. Next, run source ~/.bashrc and follow README."
