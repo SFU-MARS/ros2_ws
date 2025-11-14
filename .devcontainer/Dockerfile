@@ -5,7 +5,7 @@
 ###########################################
 # Base image
 ###########################################
-FROM nvidia/cuda:12.5.1-devel-ubuntu22.04 AS base
+FROM nvidia/cuda:12.9.1-devel-ubuntu22.04 AS base
 
 ENV NVIDIA_DRIVER_CAPABILITIES=all
 
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
   && locale-gen en_US.UTF-8 \
   && update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8 \
   && rm -rf /var/lib/apt/lists/*
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # Install timezone
 RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime \
@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo \
     software-properties-common \
     wget \
+    rsync \
     && rm -rf /var/lib/apt/lists/*
 
 ## Install ROS2 (add key, repo, and install)
@@ -65,8 +66,8 @@ RUN apt-get update \
   libtinfo5 
 
 # Env vars for the nvidia-container-runtime.
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV QT_X11_NO_MITSHM 1
+ENV NVIDIA_VISIBLE_DEVICES=all
+ENV QT_X11_NO_MITSHM=1
 
 ENV ROS_DISTRO=humble
 ENV AMENT_PREFIX_PATH=/opt/ros/humble
@@ -103,6 +104,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 
 RUN rosdep init || echo "rosdep already initialized"
+RUN rosdep update
 
 ARG USERNAME=ros
 ARG USER_UID=1000
@@ -163,9 +165,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-joint-state-publisher \
     ros-humble-rtabmap-ros \
     ros-humble-xacro \
+    ros-humble-zed-msgs \
     && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
-
 
 # ###########################################
 # #  Zed2
@@ -174,11 +176,11 @@ FROM bn AS zed
 ARG UBUNTU_MAJOR=22
 ARG UBUNTU_MINOR=04
 ARG CUDA_MAJOR=12
-ARG CUDA_MINOR=1
-ARG CUDA_PATCH=0
-ARG ZED_SDK_MAJOR=4
-ARG ZED_SDK_MINOR=1
-ARG ZED_SDK_PATCH=2
+ARG CUDA_MINOR=9
+ARG CUDA_PATCH=1
+ARG ZED_SDK_MAJOR=5
+ARG ZED_SDK_MINOR=0
+ARG ZED_SDK_PATCH=7
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install --no-install-recommends -y lsb-release wget sudo build-essential cmake python3 python3-pip libpng-dev libgomp1 less udev zstd
@@ -190,7 +192,7 @@ ENV DEBIAN_FRONTEND=
 USER ros
 # ML: For some reason $USER is empty, this causes the folowing script to not work
 ENV USER=ros
-RUN wget -q -O /home/ros/ZED_SDK_Linux_Ubuntu.run https://download.stereolabs.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/cu${CUDA_MAJOR}${CUDA_MINOR%.*}/ubuntu${UBUNTU_MAJOR}
+RUN wget -q -O /home/ros/ZED_SDK_Linux_Ubuntu.run https://download.stereolabs.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/cu${CUDA_MAJOR}/ubuntu${UBUNTU_MAJOR}
 RUN chmod +x /home/ros/ZED_SDK_Linux_Ubuntu.run 
 RUN ./home/ros/ZED_SDK_Linux_Ubuntu.run -- silent skip_cuda 
 
@@ -200,13 +202,13 @@ RUN ln -sf /lib/x86_64-linux-gnu/libusb-1.0.so.0 /usr/lib/x86_64-linux-gnu/libus
 RUN rm /home/ros/ZED_SDK_Linux_Ubuntu.run 
 RUN rm -rf /var/lib/apt/lists/*
 
-
 # Source
 ARG WORKSPACE
 RUN echo "if [ -f ${WORKSPACE}/install/setup.bash ]; then source ${WORKSPACE}/install/setup.bash; fi" >> /home/ros/.bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/ros/.bashrc
 
 RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:/opt/ros/humble/share/turtlebot3_gazebo/models" >> /home/ros/.bashrc
+RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/install/robot_utils/share/robot_utils/models" >> /home/ros/.bashrc
 RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/install/hunavis/share/hunavis/models" >> /home/ros/.bashrc
 RUN echo "export GAZEBO_MODEL_PATH=\$GAZEBO_MODEL_PATH:${WORKSPACE}/src/hunav_gazebo_wrapper/media" >> /home/ros/.bashrc
 RUN echo "export TURTLEBOT3_MODEL=waffle" >> /home/ros/.bashrc
@@ -220,3 +222,7 @@ RUN echo "export XLA_PYTHON_CLIENT_MEM_FRACTION=0.1" >> /home/ros/.bashrc
 RUN chmod -R 700 /run/user
 RUN chown -R ros:ros /run/user
 RUN echo "source /usr/share/gazebo/setup.sh" >> /home/ros/.bashrc
+
+RUN mkdir -p py
+RUN mkdir -p src
+RUN touch py/COLCON_IGNORE
